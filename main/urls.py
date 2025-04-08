@@ -1,22 +1,25 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import (
-    ItemList,
-    ItemDetail,
-    CompanyList,
-    CompanyDetail,
+    ItemVS,
+    CompanyVS,
+    CommentVS,
+    CommentCreate,
     CommentList,
-    CommentDetail,
 )
+
+router = DefaultRouter()
+router.register("companies", CompanyVS, basename="companies")
+router.register("items", ItemVS, basename="items")
+router.register("comments", CommentVS, basename="comments")
 
 
 urlpatterns = [
-    # Items
-    path("items/", ItemList.as_view(), name="item-list"),
-    path("items/<int:pk>/", ItemDetail.as_view(), name="item-detail"),
-    # Companies
-    path("companies/", CompanyList.as_view(), name="company-list"),
-    path("companies/<int:pk>/", CompanyDetail.as_view(), name="company-detail"),
-    # Comments
-    path("comments/", CommentList.as_view(), name="comment-list"),
-    path("comments/<int:pk>/", CommentDetail.as_view(), name="comment-detail"),
+    path("", include(router.urls)),
+    path(
+        "items/<int:pk>/comments/create/",
+        CommentCreate.as_view(),
+        name="comment-create",
+    ),
+    path("items/<int:pk>/comments/", CommentList.as_view(), name="comment-list"),
 ]

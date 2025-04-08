@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 
 
 class Company(models.Model):
@@ -26,6 +27,7 @@ class Item(models.Model):
 
 
 class Comment(models.Model):
+    comment_user = models.ForeignKey(User, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="comments")
     rating = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
@@ -36,4 +38,4 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.item.name} - {self.rating}"
+        return f"{self.rating} - {self.text}"
